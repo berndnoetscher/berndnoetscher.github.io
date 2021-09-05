@@ -1,10 +1,407 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>restaurantapp2</title>
-</head>
-<body>
-  <script src="main.dart.js" type="application/javascript"></script>
+<body style="margin:0;">
+
+
+  <canvas id="canvas" width="400" height="300">
+  </canvas>
+
+
 </body>
-</html>
+
+<script>
+
+  /*
+  TODO
+  auf der karte nur die großen städte (oder historische bedeutende) benennen, oder wenn es extrem einzeln steht
+  längen- und breitengrade entfernen
+  zug hentry v entfernen
+  */
+
+  entities = [
+
+    {
+      type: 'City', x: 807, y: 477, name: 'Orleans', faction: 'French', troops: 1300, capital: true, river: true, wall: true,
+      // provice: 'BRITTANY',
+      neighbours: ['Paris']
+    },
+    {
+      type: 'City', x: 833, y: 352, name: 'Paris', faction: 'English', troops: 500, capital: true, river: true, wall: true
+    },
+
+    {
+      type: 'City', x: 861, y: 393, name: 'Melun', faction: 'French', troops: 120, capital: false
+    },
+
+    {
+      type: 'City', x: 785, y: 460, name: 'Patay', faction: 'French', troops: 230, capital: false
+    },
+
+    {
+      type: 'City', x: 703, y: 539, name: 'Tours', faction: 'French', troops: 200, capital: true
+    },
+
+    {
+      type: 'City', x: 550, y: 690, name: 'La Rochelle', faction: 'French', troops: 200, capital: true
+    },
+
+    {
+      type: 'City', x: 601, y: 520, name: 'Angers', faction: 'French', troops: 200, capital: true
+    },
+
+    {
+      type: 'City', x: 735, y: 287, name: 'Rouen', faction: 'English', troops: 200, capital: true
+    },
+
+    {
+      type: 'City', x: 1063, y: 538, name: 'Dijon', faction: 'Burgundian', troops: 200, capital: true
+    },
+
+    {
+      type: 'City', x: 661, y: 456, name: 'Le Mans', faction: 'English', troops: 200, capital: true
+    },
+
+    {
+      type: 'City', x: 520, y: 549, name: 'Nantes', faction: 'English', troops: 200, capital: true
+    },
+
+    {
+      type: 'City', x: 507, y: 448, name: 'Rennes', faction: 'English', troops: 200, capital: true
+    },
+
+    {
+      type: 'City', x: 280, y: 399, name: 'Brest', faction: 'English', troops: 200, capital: false
+    },
+
+    {
+      type: 'City', x: 420, y: 497, name: 'Vannes', faction: 'English', troops: 200, capital: false
+    },
+    {
+      type: 'City', x: 484, y: 378, name: 'St. Malo', faction: 'English', troops: 200, capital: false
+    },
+    {
+      type: 'City', x: 542, y: 544, name: 'Champtoccaur', faction: 'English', troops: 200, capital: false
+    },
+    {
+      type: 'City', x: 520, y: 262, name: 'Cherbourg', faction: 'English', troops: 200, capital: false
+    },
+    {
+      type: 'City', x: 590, y: 303, name: 'Bayeux', faction: 'English', troops: 200, capital: false
+    },
+    {
+      type: 'City', x: 618, y: 319, name: 'Caen', faction: 'English', troops: 200, capital: false
+    },
+    {
+      type: 'City', x: 378, y: 118, name: 'Exeter', faction: 'English', troops: 200, capital: false
+    },
+    {
+      type: 'City', x: 668, y: 561, name: 'Chinon', faction: 'French', troops: 200, capital: false
+    },
+    {
+      type: 'City', x: 537, y: 102, name: 'Southampton', faction: 'English', troops: 200, capital: false
+    },
+    {
+      type: 'City', x: 551, y: 86, name: 'Winchester', faction: 'English', troops: 200, capital: false
+    },
+    {
+      type: 'City', x: 561, y: 120, name: 'Portsmouth', faction: 'English', troops: 200, capital: false
+    },
+
+    {
+      type: 'City', x: 643, y: 33, name: 'London', faction: 'English', troops: 200, capital: false
+    },
+    {
+      type: 'City', x: 730, y: 65, name: 'Canterbury', faction: 'English', troops: 200, capital: false
+    },
+    {
+      type: 'City', x: 751, y: 74, name: 'Dover', faction: 'English', troops: 200, capital: false
+    },
+
+    // ***
+    {
+      type: 'Army', x: 561, y: 120, name: 'Supply', faction: 'English', troops: 6000, supply: 10, speed: 4,
+      from: ['Portsmouth'], to: ['Cherbourg']
+    },
+
+    {
+      type: 'Army', x: 807, y: 350, name: 'Talbot', faction: 'English', troops: 8000, supply: 10, speed: 2,
+      from: ['Paris'], to: ['Orleans']
+    },
+
+    {
+      type: 'Army', x: 807, y: 350, name: 'Talbot', faction: 'English', troops: 8000, supply: 10, speed: 2,
+      from: ['Paris'], to: ['Orleans']
+    },
+  ];
+
+  let selectedEntity = undefined;
+
+  var canvas = document.getElementById('canvas');
+  var context = canvas.getContext('2d');
+  var x = 75;
+  var y = 50;
+  let counter = 0;
+
+
+  var image = new Image();
+  var dragok = false;
+
+  function circle(x, y, radius, border) {
+    context.beginPath();
+    context.arc(x, y, radius, 0, 2 * Math.PI);
+    context.closePath();
+    context.fill();
+    if (border) {
+      context.lineWidth = border;
+      context.strokeStyle = 'black';
+      context.stroke();
+    }
+
+  }
+
+  function rect(x, y, w, h) {
+    context.beginPath();
+    context.rect(x, y, w, h);
+    context.closePath();
+    context.fill();
+    context.lineWidth = 2;
+    context.strokeStyle = 'black';
+    context.stroke();
+  }
+
+  function init() {
+
+    image.src = 'map2.jpg';
+    image.onload = function () {
+      context.canvas.width = image.width;
+      context.canvas.height = image.height;
+      setInterval(process, 1000);
+      setInterval(paint, 1000);
+    };
+  }
+
+  function formatCityTroopsText(troops) {
+    return (troops / 100).toFixed(0);
+  }
+
+  function formatArmyTroopsText(troops) {
+    return (troops / 100).toFixed(0);
+    //  if (troops < 1000) return (troops / 100).toFixed(0) + 'H';
+    //   return (troops / 1000).toFixed(1) + 'K';
+
+  }
+
+  function drawCity(entity) {
+    if (entity.faction == 'English') {
+      context.fillStyle = "rgba(255, 0, 0, 0.6)";
+    } else if (entity.faction == 'French') {
+      context.fillStyle = "rgba(0, 0, 255, 0.6)";
+    } else if (entity.faction == 'Burgundian') {
+      context.fillStyle = "#00ff00";
+    }
+
+    if (entity == selectedEntity) {
+      context.fillStyle = "#aaaaaaaa";
+      let size = entity.capital ? 150 : 125;
+      circle(entity.x, entity.y, size, entity.wall);
+      if (counter % 2 == 0) {
+        context.fillStyle = "#994444";
+      } else {
+        context.fillStyle = "#fffff";
+      }
+
+    }
+
+    let size = entity.capital ? 12 : 10;
+    circle(entity.x, entity.y, size, entity.wall ? 2 : 1);
+    context.fillStyle = "#FFF0F0";
+    if (entity == selectedEntity) {
+      if (counter % 2 == 0) {
+        context.fillStyle = "#FFF0F0";
+      } else {
+        context.fillStyle = "#000000";
+      }
+    }
+
+    context.font = "10px Arial";
+    context.fillText(formatCityTroopsText(entity.troops), entity.x - 6, entity.y + 4);
+  }
+
+  function drawArmy(entity) {
+    if (entity.faction == 'English') {
+      context.fillStyle = "#ff0000";
+    } else if (entity.faction == 'French') {
+      context.fillStyle = "#0000ff";
+    } else if (entity.faction == 'Burgundian') {
+      context.fillStyle = "#00ff00";
+    }
+
+    rect(entity.x - 5, entity.y - 5, 10, 10);
+
+    context.font = "10px Arial";
+    context.fillText(entity.supply, entity.x - context.measureText(entity.supply).width / 2, entity.y - 7);
+
+    context.font = "10px Arial";
+    context.fillText(entity.name, entity.x - context.measureText(entity.name).width / 2, entity.y + 14);
+
+    context.fillStyle = "#ffffff";
+    context.fillText(formatArmyTroopsText(entity.troops), entity.x - 6, entity.y + 4);
+
+  }
+
+  function getEntityByName(name) {
+    for (entity of entities) {
+      if (entity.name == name) {
+        return entity;
+      }
+    }
+    return undefined;
+
+  }
+
+  function moveArmy(entity) {
+    if (entity.to != undefined) {
+      let to = getEntityByName(entity.to);
+      let speed = entity.speed;
+      while (speed > 0 && (entity.x != to.x || entity.y != to.y)) {
+        let random_boolean = Math.random() < 0.5;
+        if (random_boolean) {
+          if (entity.x < to.x) {
+            entity.x++; speed--;
+          } else if (entity.x > to.x) {
+            entity.x--; speed--;
+          }
+        } else {
+          if (entity.y < to.y) {
+            entity.y++; speed--;
+          } else if (entity.y > to.y) {
+            entity.y--; speed--;
+          }
+        }
+      }
+
+    }
+    let city = armyIsInCity(entity);
+    if (city && city.faction != entity.faction) {
+      city.faction = entity.faction;
+    }
+    if (!city && entity.supply > 0) entity.supply--;
+  }
+
+  function armyIsInCity(army) {
+    for (entity of entities) {
+      if (entity.type == 'City' && entity.x == army.x && entity.y == army.y) {
+        return entity;
+      }
+    }
+    return undefined;
+  }
+
+  function supplyArmy(entity) {
+    let canSupply = armyIsInCity(entity);
+
+    if (canSupply && entity.supply < 50) entity.supply++;
+
+    if (entity.supply == 0) entity.troops -= Math.ceil(Math.random() * 10);
+  }
+
+  function process() {
+    counter++;
+
+    entities.forEach(entity => {
+
+      switch (entity.type) {
+        case 'City':
+          // entity.troops++;
+          break;
+        case 'Army':
+          moveArmy(entity);
+          supplyArmy(entity);
+
+          break;
+      }
+    });
+
+  }
+
+  function paint() {
+
+    context.drawImage(image, 0, 0);
+
+    entities.forEach(entity => {
+
+      switch (entity.type) {
+        case 'City':
+          drawCity(entity);
+          break;
+        case 'Army':
+          drawArmy(entity);
+          break;
+      }
+    });
+
+    context.fillStyle = "#444444";
+    rect(x - 15, y - 15, 30, 30);
+    context.fillStyle = "#ff550d";
+    rect(x - 25, y - 25, 30, 30);
+    context.fillStyle = "#800080";
+    rect(x - 35, y - 35, 30, 30);
+    context.fillStyle = "#0c64e8";
+    rect(x - 45, y - 45, 30, 30);
+  }
+
+  function myMove(e) {
+    if (dragok) {
+      x = e.pageX - canvas.offsetLeft;
+      y = e.pageY - canvas.offsetTop;
+    }
+  }
+
+  function getSelectedEntity(e, type) {
+
+    for (entity of entities) {
+
+      if (type == entity.type && e.pageX < entity.x + 15 + canvas.offsetLeft && e.pageX > entity.x - 15 + canvas.offsetLeft
+        && e.pageY < entity.y + 15 + canvas.offsetTop && e.pageY > entity.y - 15 + canvas.offsetTop) {
+        return entity;
+      }
+    }
+    return undefined;
+
+  }
+
+  function myDown(e) {
+    console.log('x:' + e.pageX + ', y:' + e.pageY);
+    if (e.pageX < x + 15 + canvas.offsetLeft && e.pageX > x - 15 +
+      canvas.offsetLeft && e.pageY < y + 15 + canvas.offsetTop &&
+      e.pageY > y - 15 + canvas.offsetTop) {
+      x = e.pageX - canvas.offsetLeft;
+      y = e.pageY - canvas.offsetTop;
+      dragok = true;
+      canvas.onmousemove = myMove;
+    }
+
+    let selectedEntityWasArmy = undefined;
+    if (selectedEntity && selectedEntity.type == 'Army') {
+      selectedEntityWasArmy = selectedEntity;
+    }
+
+    selectedEntity = getSelectedEntity(e, 'Army');
+    if (!selectedEntity) selectedEntity = getSelectedEntity(e, 'City');
+    if (selectedEntity) console.log('selectedEntity:' + selectedEntity.name);
+
+    if (selectedEntityWasArmy && selectedEntity) {
+      selectedEntityWasArmy.to = selectedEntity.name;
+    }
+
+  }
+
+  function myUp() {
+    dragok = false;
+    canvas.onmousemove = null;
+  }
+
+  init();
+  canvas.onmousedown = myDown;
+  canvas.onmouseup = myUp;
+
+
+</script>
