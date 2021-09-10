@@ -368,8 +368,10 @@ erst province erobern, dann deren städte möglich,  wenn eigen province geht mo
 
     }
 
-    let size = 135;
+    let size = 235;
     rect(entity.x, entity.y, size, size/*, entity.wall ? 2 : 2*/);
+    circle(entity.x + 35, entity.y + 35, 30, 2);
+
     //context.fillStyle = "#FFF0F0";
     if (entity == selectedEntity) {
       if (counter % 2 == 0) {
@@ -385,7 +387,9 @@ erst province erobern, dann deren städte möglich,  wenn eigen province geht mo
     context.font = "36px Arial";
     // context.font = "16px Arial";
     const text = formatCityTroopsText(entity.troops);
-    drawCenteredText(text, entity.x + size / 2, entity.y + size / 2);
+    drawCenteredText(text, entity.x + 35, entity.y + 35);
+    context.font = "16px Arial";
+    drawCenteredText('Joan of Arc', entity.x + 35, entity.y + 55);
     /*
    context.strokeText(text, entity.x - 6, entity.y + 4);
 
