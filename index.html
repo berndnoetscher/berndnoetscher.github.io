@@ -10,6 +10,40 @@
 <script>
 
   /*
+  wenn province leer und alle dazugehörigen cities einer partei -> automatisch wieder zu dieser farbe
+
+  armee nur in provinzen aufstellen, automatisch von städte gefüttert pro runde,  städteausbau bestimmt einheitenart
+  hafensymbol neben stadt anklickbar für schiffe,  schiffe auf raute im meer,   raute verbunden mit cities and provinces
+
+  province kann befestigt werden->festung bauen
+
+  zeitliste: + historische ereignisse auf der karte links als sammelbild wie kreuzgang, einzelne stationen, ausgegraut dann bunt
+  statistikleiste   farben repräsentieren anzahl städte + spanish + german
+karte
+ ausbau/karten/weiter
+
+ ausser hautpkarte alles mit html realisieren
+
+ karten wirken nur für hauptkarte, nicht für schlacht
+
+bewegung mit geste-slide immer 90% der einheiten,  mehrmals hintereinander addiert  -> pfeil mit einheiten wird angezeigt
+
+ausbau:festung,hafen,stadt (stadtmauer, einheitenarten)  ((flugplatz neben procincesymbol))
+
+goto möglich wenn eigene provinz und verbindung da
+
+schiffstransport: anzahl schiffe erlaubt anzahl bodentruppen zu transportieren, wenn verbindung zwischen von/zu da ist, auch
+über mehrere meere möglich
+
+  intro->menu->help
+              ->game->ende1+ende2
+              ->links zu allen anderen games->app/play store
+              ->disclaimer
+
+werbung schauen um karte zu bekommen, einheiten etc.
+
+erst province erobern, dann deren städte möglich,  wenn eigen province geht movement aber sofort auf deren städte
+
   TODO
   auf der karte nur die großen städte (oder historische bedeutende) benennen, oder wenn es extrem einzeln steht
   längen- und breitengrade entfernen
@@ -18,41 +52,123 @@
 
   entities = [
 
+    // *** 
+    {
+      type: 'Province', x: 422, y: 435, name: 'BRITTANY', faction: 'Breton', troops: 200
+    },
+    {
+      type: 'Province', x: 517, y: 25, name: 'ENGLAND', faction: 'English', troops: 200
+    }, {
+      type: 'Province', x: 971, y: 531, name: 'BURGUND', faction: 'Burgundian', troops: 200
+    },
+    {
+      type: 'Province', x: 613, y: 352, name: 'NORMANDY', faction: 'English', troops: 5200, cities: ['Brest', 'Vannes', 'Nantes', 'Rennes', 'St. Male'],
+      neighbours: ['POITOU', 'ANJOU', 'MAINE', 'ALENCON', 'NORMANDY']
+    },
+    {
+      type: 'Province', x: 811, y: 597, name: 'BERRY', faction: 'French', troops: 3200
+    }, {
+      type: 'Province', x: 613, y: 662, name: 'POITOU', faction: 'French', troops: 200
+    }, {
+      type: 'Province', x: 577, y: 552, name: 'ANJOU', faction: 'French', troops: 200
+    },
+    {
+      type: 'Province', x: 731, y: 607, name: 'TOURAINE', faction: 'French', troops: 200
+    },
+    {
+      type: 'Province', x: 701, y: 448, name: 'ALENCON', faction: 'English', troops: 200
+    },
+    {
+      type: 'Province', x: 586, y: 408, name: 'MAINE', faction: 'English', troops: 200
+    },
+    {
+      type: 'Province', x: 978, y: 112, name: 'BRABANT', faction: 'German', troops: 200
+    }, {
+      type: 'Province', x: 1191, y: 948, name: 'PROVENCE', faction: 'German', troops: 200
+    },
+    {
+      type: 'Province', x: 499, y: 1059, name: 'NAVARRE', faction: 'Spanish', troops: 200
+    },
+    // ***
+    {
+      type: 'Province', x: 588, y: 195, name: 'ENGLISH CHANNEL', faction: 'English', troops: 200
+    },
     {
       type: 'City', x: 807, y: 477, name: 'Orleans', faction: 'French', troops: 1300, capital: true, river: true, wall: true,
       // provice: 'BRITTANY',
       neighbours: ['Paris']
     },
     {
-      type: 'City', x: 833, y: 352, name: 'Paris', faction: 'English', troops: 500, capital: true, river: true, wall: true
+      type: 'City', x: 833, y: 352, name: 'Paris', faction: 'English', troops: 39900, capital: true, river: true, wall: true
     },
 
     {
-      type: 'City', x: 861, y: 393, name: 'Melun', faction: 'French', troops: 120, capital: false
+      type: 'City', x: 861, y: 393, name: 'Melun', faction: 'English', troops: 120, capital: false
     },
 
     {
-      type: 'City', x: 785, y: 460, name: 'Patay', faction: 'French', troops: 230, capital: false
+      type: 'City', x: 785, y: 460, name: 'Patay', faction: 'English', troops: 230, capital: false
     },
 
     {
-      type: 'City', x: 703, y: 539, name: 'Tours', faction: 'French', troops: 200, capital: true
+      type: 'City', x: 703, y: 539, name: 'Tours', faction: 'French', troops: 2000, capital: false
     },
 
     {
-      type: 'City', x: 550, y: 690, name: 'La Rochelle', faction: 'French', troops: 200, capital: true
+      type: 'City', x: 550, y: 690, name: 'La Rochelle', faction: 'French', troops: 200, capital: false
     },
 
     {
       type: 'City', x: 601, y: 520, name: 'Angers', faction: 'French', troops: 200, capital: true
     },
-
     {
-      type: 'City', x: 735, y: 287, name: 'Rouen', faction: 'English', troops: 200, capital: true
+      type: 'City', x: 630, y: 591, name: 'Thouars', faction: 'French', troops: 200, capital: false
+    },
+    {
+      type: 'City', x: 672, y: 641, name: 'Poitiers', faction: 'French', troops: 200, capital: true
+    },
+    {
+      type: 'City', x: 760, y: 511, name: 'Blois', faction: 'French', troops: 200, capital: false
+    },
+    {
+      type: 'City', x: 728, y: 565, name: 'Loches', faction: 'French', troops: 200, capital: false
+    },
+    {
+      type: 'City', x: 735, y: 652, name: 'La Tremouille', faction: 'French', troops: 200, capital: false
+    },
+    {
+      type: 'City', x: 850, y: 571, name: 'Bourges', faction: 'French', troops: 200, capital: true
+    },
+    {
+      type: 'City', x: 903, y: 632, name: 'Bourbon', faction: 'French', troops: 3200, capital: true
+    },
+    {
+      type: 'City', x: 861, y: 499, name: 'Grien', faction: 'French', troops: 200, capital: true
+    },
+    {
+      type: 'City', x: 905, y: 733, name: 'Clermont', faction: 'French', troops: 200, capital: true
+    },
+    {
+      type: 'City', x: 934, y: 636, name: 'Moudins', faction: 'French', troops: 200, capital: true
+    },
+    {
+      type: 'City', x: 1062, y: 729, name: 'Lyons', faction: 'French', troops: 200, capital: true
+    },
+    {
+      type: 'City', x: 869, y: 908, name: 'Rodez', faction: 'French', troops: 200, capital: true
+    },
+    {
+      type: 'City', x: 839, y: 962, name: 'Albi', faction: 'French', troops: 200, capital: true
+    },
+    {
+      type: 'City', x: 1134, y: 792, name: 'Gernoble', faction: 'French', troops: 200, capital: true
     },
 
     {
       type: 'City', x: 1063, y: 538, name: 'Dijon', faction: 'Burgundian', troops: 200, capital: true
+    },
+    {
+      type: 'City', x: 911, y: 581, name: 'Nevers', faction: 'Burgundian', troops: 200, capital: true
     },
 
     {
@@ -60,26 +176,27 @@
     },
 
     {
-      type: 'City', x: 520, y: 549, name: 'Nantes', faction: 'English', troops: 200, capital: true
+      type: 'City', x: 520, y: 549, name: 'Nantes', faction: 'Breton', troops: 200, capital: false
     },
 
     {
-      type: 'City', x: 507, y: 448, name: 'Rennes', faction: 'English', troops: 200, capital: true
+      type: 'City', x: 507, y: 448, name: 'Rennes', faction: 'Breton', troops: 200, capital: true
     },
 
     {
-      type: 'City', x: 280, y: 399, name: 'Brest', faction: 'English', troops: 200, capital: false
+      type: 'City', x: 280, y: 399, name: 'Brest', faction: 'Breton', troops: 200, capital: false
     },
 
     {
-      type: 'City', x: 420, y: 497, name: 'Vannes', faction: 'English', troops: 200, capital: false
+      type: 'City', x: 420, y: 497, name: 'Vannes', faction: 'Breton', troops: 200, capital: false
     },
     {
-      type: 'City', x: 484, y: 378, name: 'St. Malo', faction: 'English', troops: 200, capital: false
+      type: 'City', x: 484, y: 378, name: 'St. Malo', faction: 'Breton', troops: 200, capital: false
     },
-    {
-      type: 'City', x: 542, y: 544, name: 'Champtoccaur', faction: 'English', troops: 200, capital: false
-    },
+    /* {
+       type: 'City', x: 542, y: 544, name: 'Champtoccaur', faction: 'Breton', troops: 200, capital: false
+     },*/
+
     {
       type: 'City', x: 520, y: 262, name: 'Cherbourg', faction: 'English', troops: 200, capital: false
     },
@@ -90,10 +207,20 @@
       type: 'City', x: 618, y: 319, name: 'Caen', faction: 'English', troops: 200, capital: false
     },
     {
+      type: 'City', x: 666, y: 278, name: 'Hafleur', faction: 'English', troops: 200, capital: false
+    },
+    {
+      type: 'City', x: 734, y: 288, name: 'Rouen', faction: 'English', troops: 200, capital: true
+    },
+    {
+      type: 'City', x: 724, y: 375, name: 'Verneuil', faction: 'English', troops: 200, capital: true
+    },
+
+    {
       type: 'City', x: 378, y: 118, name: 'Exeter', faction: 'English', troops: 200, capital: false
     },
     {
-      type: 'City', x: 668, y: 561, name: 'Chinon', faction: 'French', troops: 200, capital: false
+      type: 'City', x: 668, y: 561, name: 'Chinon', faction: 'French', troops: 200, capital: true
     },
     {
       type: 'City', x: 537, y: 102, name: 'Southampton', faction: 'English', troops: 200, capital: false
@@ -106,7 +233,7 @@
     },
 
     {
-      type: 'City', x: 643, y: 33, name: 'London', faction: 'English', troops: 200, capital: false
+      type: 'City', x: 643, y: 33, name: 'London', faction: 'English', troops: 200, capital: true
     },
     {
       type: 'City', x: 730, y: 65, name: 'Canterbury', faction: 'English', troops: 200, capital: false
@@ -114,8 +241,13 @@
     {
       type: 'City', x: 751, y: 74, name: 'Dover', faction: 'English', troops: 200, capital: false
     },
+    {
+      type: 'City', x: 1131, y: 257, name: 'Luxemburg', faction: 'German', troops: 200, capital: false
+    },
+
 
     // ***
+
     {
       type: 'Army', x: 561, y: 120, name: 'Supply', faction: 'English', troops: 6000, supply: 10, speed: 4,
       from: ['Portsmouth'], to: ['Cherbourg']
@@ -189,19 +321,45 @@
 
   }
 
-  function drawCity(entity) {
+  function drawCenteredText(text, centerX, centerY) {
+
+    // save the unaltered context
+    context.save();
+
+    // approximate the font height
+    var approxFontHeight = parseInt(context.font);
+
+    // alter the context to center-align the text
+    context.textAlign = "center";
+
+    // draw the text centered at [centerX,centerY]
+    context.strokeText(text, centerX, centerY + approxFontHeight / 4 + 1);
+    context.fillText(text, centerX, centerY + approxFontHeight / 4 + 1);
+
+    // restore the unaltered context
+    context.restore();
+
+  }
+
+  function drawProvince(entity) {
     if (entity.faction == 'English') {
-      context.fillStyle = "rgba(255, 0, 0, 0.6)";
+      context.fillStyle = "rgba(255, 0, 0, 0.3)";
     } else if (entity.faction == 'French') {
-      context.fillStyle = "rgba(0, 0, 255, 0.6)";
+      context.fillStyle = "rgba(0, 0, 255, 0.3)";
     } else if (entity.faction == 'Burgundian') {
-      context.fillStyle = "#00ff00";
+      context.fillStyle = "rgba(0, 255,0, 0.3)";
+    } else if (entity.faction == 'Breton') {
+      context.fillStyle = "rgba( 255,255,51, 0.3)";
+    } else if (entity.faction == 'German') {
+      context.fillStyle = "rgba( 255,255,251, 0.3)";
+    } else if (entity.faction == 'Spanish') {
+      context.fillStyle = "rgba( 255,255,251, 0.3)";
     }
 
     if (entity == selectedEntity) {
       context.fillStyle = "#aaaaaaaa";
       let size = entity.capital ? 150 : 125;
-      circle(entity.x, entity.y, size, entity.wall);
+      circle(entity.x, entity.y, size, 2/*entity.wall*/);
       if (counter % 2 == 0) {
         context.fillStyle = "#994444";
       } else {
@@ -210,8 +368,66 @@
 
     }
 
-    let size = entity.capital ? 12 : 10;
-    circle(entity.x, entity.y, size, entity.wall ? 2 : 1);
+    let size = 135;
+    rect(entity.x, entity.y, size, size/*, entity.wall ? 2 : 2*/);
+    //context.fillStyle = "#FFF0F0";
+    if (entity == selectedEntity) {
+      if (counter % 2 == 0) {
+        context.fillStyle = "#FFF0F0";
+      } else {
+        context.fillStyle = "#000000";
+      }
+    }
+
+    context.fillStyle = 'white';
+    context.strokeStyle = 'black';
+    // context.strokeStyle = 'black';
+    context.font = "36px Arial";
+    // context.font = "16px Arial";
+    const text = formatCityTroopsText(entity.troops);
+    drawCenteredText(text, entity.x + size / 2, entity.y + size / 2);
+    /*
+   context.strokeText(text, entity.x - 6, entity.y + 4);
+
+
+   context.font = '20pt Verdana';
+   context.fillText('Some text', 50, 50);
+   context.strokeText('Some text', 50, 50);
+
+   context.fill();
+   context.stroke();*/
+  }
+
+
+  function drawCity(entity) {
+    if (entity.faction == 'English') {
+      context.fillStyle = "rgba(255, 0, 0, 0.6)";
+    } else if (entity.faction == 'French') {
+      context.fillStyle = "rgba(0, 0, 255, 0.6)";
+    } else if (entity.faction == 'Burgundian') {
+      context.fillStyle = "rgba(0, 255,0, 0.6)";
+    } else if (entity.faction == 'Breton') {
+      context.fillStyle = "rgba( 255,255,51, 0.6)";
+    } else if (entity.faction == 'German') {
+      context.fillStyle = "rgba( 255,255,251, 0.6)";
+    } else if (entity.faction == 'Spanish') {
+      context.fillStyle = "rgba( 255,255,251, 0.6)";
+    }
+
+    if (entity == selectedEntity) {
+      context.fillStyle = "#aaaaaaaa";
+      let size = entity.capital ? 140 : 125;
+      circle(entity.x, entity.y, size, 2/*entity.wall*/);
+      if (counter % 2 == 0) {
+        context.fillStyle = "#994444";
+      } else {
+        context.fillStyle = "#fffff";
+      }
+
+    }
+
+    let size = entity.capital ? 14 : 10;
+    circle(entity.x, entity.y, size, entity.wall ? 2 : 2);
     context.fillStyle = "#FFF0F0";
     if (entity == selectedEntity) {
       if (counter % 2 == 0) {
@@ -221,8 +437,24 @@
       }
     }
 
-    context.font = "10px Arial";
-    context.fillText(formatCityTroopsText(entity.troops), entity.x - 6, entity.y + 4);
+    context.fillStyle = 'white';
+    context.strokeStyle = 'black';
+    context.font = "16px Arial";
+    const text = formatCityTroopsText(entity.troops);
+
+    drawCenteredText(text, entity.x, entity.y);
+
+    // context.strokeText(text, entity.x - 6, entity.y + 5);
+    // context.fillText(text, entity.x - 6, entity.y + 5);
+
+    /*
+    
+       context.font = '20pt Verdana';
+       context.fillText('Some text', 50, 50);
+       context.strokeText('Some text', 50, 50);
+    
+       context.fill();
+       context.stroke();*/
   }
 
   function drawArmy(entity) {
@@ -232,6 +464,8 @@
       context.fillStyle = "#0000ff";
     } else if (entity.faction == 'Burgundian') {
       context.fillStyle = "#00ff00";
+    } else if (entity.faction == 'Breton') {
+      context.fillStyle = "#ffff50";
     }
 
     rect(entity.x - 5, entity.y - 5, 10, 10);
@@ -329,6 +563,9 @@
     entities.forEach(entity => {
 
       switch (entity.type) {
+        case 'Province':
+          drawProvince(entity);
+          break;
         case 'City':
           drawCity(entity);
           break;
