@@ -1,19 +1,44 @@
+<html lang="en-US">
+<script type="text/javascript" src="colormap.js"></script>
+
 <body style="margin:0;">
 
+  <!-- https://ezgif.com/image-to-datauri/ezgif-3-f4c5dd55e0ec.png -->
+  <img style="display: none;" id="colormap">
 
   <canvas id="canvas" width="400" height="300">
   </canvas>
 
+  <canvas id="colormapcanvas" width="0" height="0" style="display: none;">
+  </canvas>
 
 </body>
 
 <script>
 
+
   /*
-  wenn province leer und alle dazugehörigen cities einer partei -> automatisch wieder zu dieser farbe
+  https://animoto.com/builder/4LuurkH1m4iFu9aVHbjYgw
+
+
+  wappen neben provinz des anführers, kann auch in stadt sein
+
+  karten für seeschiffsausbau und für seeschiffseinsatz
+
+  ((karte für flussübersetzung, provinzen fluss dazwischen und feindlich wird gebraucht, es sei denn stadt dazwischen gehört einem
+
+ alle dazugehörigen cities einer partei -> automatisch provinz wieder zu dieser farbe, ansonsten schaffriert in farben der parteien
+
+  ((eine provinz kann beliebie anzahl armeen auch feindlicher aufnehmen
 
   armee nur in provinzen aufstellen, automatisch von städte gefüttert pro runde,  städteausbau bestimmt einheitenart
-  hafensymbol neben stadt anklickbar für schiffe,  schiffe auf raute im meer,   raute verbunden mit cities and provinces
+  ((hafensymbol neben stadt anklickbar für schiffe,  schiffe auf raute im meer, )) 
+   
+  schiffstransport über karte/raute verbunden mit cities and provinces
+
+  kampfmoral
+
+  entführung/attentat/hinrichtung/lösegeld/steuern/royal justice als karte
 
   province kann befestigt werden->festung bauen
 
@@ -52,47 +77,99 @@ erst province erobern, dann deren städte möglich,  wenn eigen province geht mo
 
   entities = [
 
+    /*
+    cities als inner array einer province
+    */
+
     // *** 
     {
-      type: 'Province', x: 422, y: 435, name: 'BRITTANY', faction: 'Breton', troops: 200
+      type: 'Province', x: 422, y: 435, name: 'BRITTANY', faction: 'Breton', troops: 4200
     },
     {
       type: 'Province', x: 517, y: 25, name: 'ENGLAND', faction: 'English', troops: 200
     }, {
-      type: 'Province', x: 971, y: 531, name: 'BURGUND', faction: 'Burgundian', troops: 200
+      type: 'Province', x: 971, y: 531, name: 'BURGUND', faction: 'Burgundian', troops: 0
     },
     {
-      type: 'Province', x: 613, y: 352, name: 'NORMANDY', faction: 'English', troops: 5200, cities: ['Brest', 'Vannes', 'Nantes', 'Rennes', 'St. Male'],
+      type: 'Province', x: 613, y: 337, name: 'NORMANDY', faction: 'English', troops: 5200, cities: ['Brest', 'Vannes', 'Nantes', 'Rennes', 'St. Male'],
       neighbours: ['POITOU', 'ANJOU', 'MAINE', 'ALENCON', 'NORMANDY']
     },
     {
-      type: 'Province', x: 811, y: 597, name: 'BERRY', faction: 'French', troops: 3200
+      type: 'Province', x: 811, y: 597, name: 'BERRY', faction: 'French', troops: 0
     }, {
-      type: 'Province', x: 613, y: 662, name: 'POITOU', faction: 'French', troops: 200
+      type: 'Province', x: 613, y: 662, name: 'POITOU', faction: 'French', troops: 44200
     }, {
       type: 'Province', x: 577, y: 552, name: 'ANJOU', faction: 'French', troops: 200
     },
     {
-      type: 'Province', x: 731, y: 607, name: 'TOURAINE', faction: 'French', troops: 200
+      type: 'Province', x: 711, y: 595, name: 'TOURAINE', faction: 'French', troops: 200
     },
     {
-      type: 'Province', x: 701, y: 448, name: 'ALENCON', faction: 'English', troops: 200
+      type: 'Province', x: 701, y: 448, name: 'ALENÇON', faction: 'English', troops: 0
     },
     {
       type: 'Province', x: 586, y: 408, name: 'MAINE', faction: 'English', troops: 200
     },
     {
-      type: 'Province', x: 978, y: 112, name: 'BRABANT', faction: 'German', troops: 200
+      type: 'Province', x: 978, y: 112, name: 'BRABANT', faction: 'German', troops: 0
     }, {
-      type: 'Province', x: 1191, y: 948, name: 'PROVENCE', faction: 'German', troops: 200
+      type: 'Province', x: 1191, y: 948, name: 'PROVENCE', faction: 'German', troops: 0
     },
     {
       type: 'Province', x: 499, y: 1059, name: 'NAVARRE', faction: 'Spanish', troops: 200
     },
-    // ***
     {
-      type: 'Province', x: 588, y: 195, name: 'ENGLISH CHANNEL', faction: 'English', troops: 200
+      type: 'Province', x: 788, y: 297, name: 'VEXIN', faction: 'English', troops: 200
     },
+    {
+      type: 'Province', x: 812, y: 400, name: 'ISLE DE FRANCE', faction: 'English', troops: 200
+    },
+    {
+      type: 'Province', x: 941, y: 356, name: 'CHAMPAGNE', faction: 'Burgundian', troops: 200
+    }, {
+      type: 'Province', x: 865, y: 86, name: 'FLANDERS', faction: 'Burgundian', troops: 200
+    },
+    {
+      type: 'Province', x: 826, y: 148, name: 'ARTOIS', faction: 'English', troops: 200
+    },
+    {
+      type: 'Province', x: 840, y: 228, name: 'PICARDY', faction: 'English', troops: 200
+    },
+    {
+      type: 'Province', x: 727, y: 675, name: 'LA MARCHE', faction: 'French', troops: 200
+    },
+    {
+      type: 'Province', x: 926, y: 665, name: 'BOURBONNAICE', faction: 'French', troops: 200
+    }, {
+      type: 'Province', x: 901, y: 792, name: 'AUVERGNE', faction: 'French', troops: 200
+    }, {
+      type: 'Province', x: 1111, y: 840, name: 'DAUPHINY', faction: 'French', troops: 200
+    }, {
+      type: 'Province', x: 921, y: 937, name: 'LANGUEDOC', faction: 'French', troops: 200
+    }, {
+      type: 'Province', x: 640, y: 994, name: 'ARMAGNAC', faction: 'French', troops: 200
+    }, {
+      type: 'Province', x: 721, y: 818, name: 'PÉRIGORD', faction: 'French', troops: 200
+    }, {
+      type: 'Province', x: 603, y: 740, name: 'ANGOULEME', faction: 'French', troops: 200
+    }, {
+      type: 'Province', x: 564, y: 873, name: 'GUIENNE', faction: 'English', troops: 200
+    }, {
+      type: 'Province', x: 528, y: 948, name: 'GASCONY', faction: 'English', troops: 200
+    }, {
+      type: 'Province', x: 1201, y: 321, name: 'LORRAINNE', faction: 'German', troops: 200
+    }, {
+      type: 'Province', x: 1271, y: 590, name: 'SWISS CONFEDERATION', faction: 'German', troops: 200
+    }, {
+      type: 'Province', x: 1173, y: 709, name: 'SAVOY', faction: 'German', troops: 200
+    }, {
+      type: 'Province', x: 1157, y: 492, name: 'FRANCHE COMTÉ', faction: 'German', troops: 200
+    },
+    // ***
+    /*   {
+         type: 'Province', x: 588, y: 195, name: 'ENGLISH CHANNEL', faction: 'English', troops: 200
+       },*/
+    // ***
     {
       type: 'City', x: 807, y: 477, name: 'Orleans', faction: 'French', troops: 1300, capital: true, river: true, wall: true,
       // provice: 'BRITTANY',
@@ -137,7 +214,7 @@ erst province erobern, dann deren städte möglich,  wenn eigen province geht mo
       type: 'City', x: 735, y: 652, name: 'La Tremouille', faction: 'French', troops: 200, capital: false
     },
     {
-      type: 'City', x: 850, y: 571, name: 'Bourges', faction: 'French', troops: 200, capital: true
+      type: 'City', x: 850, y: 571, name: 'Bourges', faction: 'French', troops: 0, capital: true
     },
     {
       type: 'City', x: 903, y: 632, name: 'Bourbon', faction: 'French', troops: 3200, capital: true
@@ -191,14 +268,14 @@ erst province erobern, dann deren städte möglich,  wenn eigen province geht mo
       type: 'City', x: 420, y: 497, name: 'Vannes', faction: 'Breton', troops: 200, capital: false
     },
     {
-      type: 'City', x: 484, y: 378, name: 'St. Malo', faction: 'Breton', troops: 200, capital: false
+      type: 'City', x: 484, y: 378, name: 'St. Malo', faction: 'Breton', troops: 0, capital: false
     },
     /* {
        type: 'City', x: 542, y: 544, name: 'Champtoccaur', faction: 'Breton', troops: 200, capital: false
      },*/
 
     {
-      type: 'City', x: 520, y: 262, name: 'Cherbourg', faction: 'English', troops: 200, capital: false
+      type: 'City', x: 520, y: 262, name: 'Cherbourg', faction: 'English', troops: 4200, capital: false
     },
     {
       type: 'City', x: 590, y: 303, name: 'Bayeux', faction: 'English', troops: 200, capital: false
@@ -207,10 +284,10 @@ erst province erobern, dann deren städte möglich,  wenn eigen province geht mo
       type: 'City', x: 618, y: 319, name: 'Caen', faction: 'English', troops: 200, capital: false
     },
     {
-      type: 'City', x: 666, y: 278, name: 'Hafleur', faction: 'English', troops: 200, capital: false
+      type: 'City', x: 666, y: 278, name: 'Hafleur', faction: 'English', troops: 4200, capital: false
     },
     {
-      type: 'City', x: 734, y: 288, name: 'Rouen', faction: 'English', troops: 200, capital: true
+      type: 'City', x: 734, y: 288, name: 'Rouen', faction: 'English', troops: 0, capital: true
     },
     {
       type: 'City', x: 724, y: 375, name: 'Verneuil', faction: 'English', troops: 200, capital: true
@@ -273,7 +350,8 @@ erst province erobern, dann deren städte möglich,  wenn eigen province geht mo
   let counter = 0;
 
 
-  var image = new Image();
+  var map = new Image();
+  // var colormap = new Image();
   var dragok = false;
 
   function circle(x, y, radius, border) {
@@ -301,16 +379,67 @@ erst province erobern, dann deren städte möglich,  wenn eigen province geht mo
 
   function init() {
 
-    image.src = 'map2.jpg';
-    image.onload = function () {
-      context.canvas.width = image.width;
-      context.canvas.height = image.height;
-      setInterval(process, 1000);
-      setInterval(paint, 1000);
-    };
+    map.src = 'map.jpg';
+    map.onload = function () {
+
+      let colormap = document.getElementById('colormap');
+
+      colormap.src = colorMapData;
+      //   colormap.src = './colormap.png';
+      colormap.onload = function () {
+        //  colormap.crossOrigin = "Anonymous";
+        //  var colorMapCanvas = document.getElementById('colormapcanvas');
+        //  var context = colorMapCanvas.getContext('2d');
+
+        const colorMapCanvas = document.createElement('canvas');
+        const context2 = colorMapCanvas.getContext("2d");
+        // colorMapCanvas.id = "canvas_id";
+        //colorMapCanvas.className = "canvas";                
+        colorMapCanvas.width = colormap.width;
+        colorMapCanvas.height = colormap.height;
+
+        context2.drawImage(colormap, 0, 0);
+
+        entities.forEach(entity => {
+
+          switch (entity.type) {
+            case 'Province':
+              drawProvince(entity);
+              let data = context2.getImageData(entity.x, entity.y, 1, 1).data;
+              let rgb = [data[0], data[1], data[2]];
+              entity.rgba = data;
+              // console.log(entity.name + entity.rgba);
+              break;
+
+          }
+        });
+
+        /*
+               For security reasons, your local drive is declared to be "other-domain" and will taint the canvas.
+        
+               This behavior is by-design. Per the HTML5 spec, as soon as you draw a cross-origin image to a canvas, it is dirty and you can no longer read the pixels.
+               */
+        /*
+       for (x = 0; x < 500; x++) {
+      
+         var data2 = context2.getImageData(x, y, 1, 1).data;
+         var data = data2.data;
+
+         var rgb = [data[0], data[1], data[2]];
+         console.log(rgb);
+       }*/
+
+        context.canvas.width = map.width;
+        context.canvas.height = map.height;
+        setInterval(process, 1000);
+        paint();
+        setInterval(paint, 5000);
+      }
+    }
   }
 
   function formatCityTroopsText(troops) {
+    if (troops == 0) return '';
     return (troops / 100).toFixed(0);
   }
 
@@ -343,17 +472,17 @@ erst province erobern, dann deren städte möglich,  wenn eigen province geht mo
 
   function drawProvince(entity) {
     if (entity.faction == 'English') {
-      context.fillStyle = "rgba(255, 0, 0, 0.3)";
+      context.fillStyle = "rgba(255, 0, 0, 0.2)";
     } else if (entity.faction == 'French') {
-      context.fillStyle = "rgba(0, 0, 255, 0.3)";
+      context.fillStyle = "rgba(0, 0, 255, 0.2)";
     } else if (entity.faction == 'Burgundian') {
-      context.fillStyle = "rgba(0, 255,0, 0.3)";
+      context.fillStyle = "rgba(0, 255,0, 0.2)";
     } else if (entity.faction == 'Breton') {
-      context.fillStyle = "rgba( 255,255,51, 0.3)";
+      context.fillStyle = "rgba( 255,255,51, 0.2)";
     } else if (entity.faction == 'German') {
-      context.fillStyle = "rgba( 255,255,251, 0.3)";
+      context.fillStyle = "rgba( 255,255,251, 0.2)";
     } else if (entity.faction == 'Spanish') {
-      context.fillStyle = "rgba( 255,255,251, 0.3)";
+      context.fillStyle = "rgba( 255,255,251, 0.2)";
     }
 
     if (entity == selectedEntity) {
@@ -368,9 +497,16 @@ erst province erobern, dann deren städte möglich,  wenn eigen province geht mo
 
     }
 
-    let size = 235;
-    rect(entity.x, entity.y, size, size/*, entity.wall ? 2 : 2*/);
-    circle(entity.x + 35, entity.y + 35, 30, 2);
+    const x = entity.x - 55;
+
+    const y = entity.y - 55;
+
+    let size = 135;
+    rect(entity.x - 55, entity.y - 55, size, size/*, entity.wall ? 2 : 2*/);
+
+    // rect(x, y, size * 2, size/*, entity.wall ? 2 : 2*/);
+    // rect(x, y, size / 4, size * 2);
+    /// circle(entity.x + 35, entity.y + 35, 30, 2);
 
     //context.fillStyle = "#FFF0F0";
     if (entity == selectedEntity) {
@@ -381,15 +517,31 @@ erst province erobern, dann deren städte möglich,  wenn eigen province geht mo
       }
     }
 
+    if (entity.faction == 'English') {
+      context.fillStyle = "rgba(255, 0, 0, 0.6)";
+    } else if (entity.faction == 'French') {
+      context.fillStyle = "rgba(0, 0, 255, 0.6)";
+    } else if (entity.faction == 'Burgundian') {
+      context.fillStyle = "rgba(0, 255,0, 0.6)";
+    } else if (entity.faction == 'Breton') {
+      context.fillStyle = "rgba( 255,255,51, 0.6)";
+    } else if (entity.faction == 'German') {
+      context.fillStyle = "rgba( 255,255,251, 0.6)";
+    } else if (entity.faction == 'Spanish') {
+      context.fillStyle = "rgba( 255,255,251, 0.6)";
+    }
+    //rect(entity.x - 55, entity.y, 40, 40/*, entity.wall ? 2 : 2*/);
+    rect(entity.x, entity.y, 40, 40/*, entity.wall ? 2 : 2*/);
+
     context.fillStyle = 'white';
     context.strokeStyle = 'black';
     // context.strokeStyle = 'black';
-    context.font = "36px Arial";
+    context.font = "22px Arial";
     // context.font = "16px Arial";
     const text = formatCityTroopsText(entity.troops);
-    drawCenteredText(text, entity.x + 35, entity.y + 35);
+    drawCenteredText(text, entity.x + 20, entity.y + 20);
     context.font = "16px Arial";
-    drawCenteredText('Joan of Arc', entity.x + 35, entity.y + 55);
+    // drawCenteredText('Joan of Arc', entity.x + 20, entity.y + 50);
     /*
    context.strokeText(text, entity.x - 6, entity.y + 4);
 
@@ -562,8 +714,14 @@ erst province erobern, dann deren städte möglich,  wenn eigen province geht mo
 
   function paint() {
 
-    context.drawImage(image, 0, 0);
-
+    context.drawImage(map, 0, 0);
+    /*
+        //const context2 = colorMapCanvas.getContext("2d");
+        context.fillStyle = "#0432ffff";
+        rect(0, 0, map.width, map.height);
+        context.globalCompositeOperation = "destination-out";
+      //  context.drawImage(colormap, 0, 0);
+    */
     entities.forEach(entity => {
 
       switch (entity.type) {
@@ -646,3 +804,5 @@ erst province erobern, dann deren städte möglich,  wenn eigen province geht mo
 
 
 </script>
+
+</html>
